@@ -41,6 +41,9 @@ class DonorController extends Controller
 
 			if($donor){
 				$donor = Donor::find($donor);
+				if($donor===null){
+					return response()->json(['code'=>422,'message'=>'Donor not found.'],404);
+				}
 				$status = 'Donor Updated Successfully';
 				if($donor->avatar && $request->avatar){
 					Tebi::delete($donor->avatar);
