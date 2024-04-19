@@ -8,3 +8,4 @@ Route::get('/', function () {
 Route::get('login',function(){
 	return response()->json('You need to login',401);
 })->name('login');
+

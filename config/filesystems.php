@@ -13,7 +13,8 @@ return [
     |
     */
 
-    'default' => env('FILESYSTEM_DISK', 'local'),
+//    'default' => env('FILESYSTEM_DISK', 'local'),
+    'default' => 'tebi',
 
     /*
     |--------------------------------------------------------------------------
@@ -55,6 +56,15 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
         ],
+
+		'tebi' => [
+			'driver' => 's3',
+			'key' => 'sehoQ7W5bFzDSV21',
+			'secret' =>  'QLQy6DQJ0b3975YsVVZVVnwwnv9AEHIXih7FqDql',
+			"endpoint" => "https://s3.tebi.io",
+			"region" => "de",
+			"version" => "2006-03-01"
+		]
 
     ],
 
