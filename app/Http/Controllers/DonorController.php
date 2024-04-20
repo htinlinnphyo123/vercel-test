@@ -15,7 +15,6 @@ class DonorController extends Controller
 {
 	public function index() : JsonResponse
 	{
-		Log::info(request('blood_type'));
 		$user = Auth::user();
 		$donors = Donor::where('created_by',$user->id)
 			->when(request('can_donate'),function($query){
