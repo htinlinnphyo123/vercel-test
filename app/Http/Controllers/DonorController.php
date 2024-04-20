@@ -15,8 +15,32 @@ class DonorController extends Controller
 {
 	public function index() : JsonResponse
 	{
+		Log::info(request('blood_type'));
 		$user = Auth::user();
-		$donors = Donor::where('created_by',$user->id)->get();
+		$donors = Donor::where('created_by',$user->id)
+			->when(request('can_donate'),function($query){
+				return $query->whereDate('last_donated','<=',now()->subDay(90));
+			})
+			->when(request('is_available'),function($query){
+				return $query->where('is_available',true);
+			})
+			->when(request('blood_type'),function($query){
+				return $query->where('blood_type',request('blood_type'));
+			})
+			->when(request('gender'),function($query){
+				return $query->where('gender',request('gender'));
+			})
+			->when(request('name'),function($query){
+				return $query->where('name','like','%'.request('name').'%');
+			})
+			->when(request('phone'),function($query){
+				$phoneNumber = request('phone');
+				return $query->where(function($query) use($phoneNumber){
+					$query->where('ph_work','like','%'.$phoneNumber.'%')
+						->orWhere('ph_home','like','%'.$phoneNumber.'%');
+				});
+			})
+			->get();
 		return response()->json(['code'=>200,'donors'=>$donors],200);
 	}
     public function store(Request $request,$donor=null) : JsonResponse
