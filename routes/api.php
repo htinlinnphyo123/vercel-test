@@ -29,10 +29,10 @@ Route::group(['middleware'=>'auth:sanctum'],function(){
 	Route::post('logout',[AuthController::class,'logout']);
 
 	//Donor
-	Route::get('donors',[DonorController::class,'index']);
-	Route::get('donors/{donor}',[DonorController::class,'show']);
-	Route::post('donors',[DonorController::class,'store']);
-	Route::put('donors/{donor}',[DonorController::class,'store']);
+	Route::get('donor/fetch',[DonorController::class,'index']);
+	Route::get('donor/getDonorById',[DonorController::class,'show']);
+	Route::post('donor/add',[DonorController::class,'store']);
+	Route::post('donor/update',[DonorController::class,'store']);
 	Route::delete('donors/{donor}',[DonorController::class,'destroy']);
 	Route::delete('donors/{donor}/delete-profile',[DonorController::class,'destroyProfile']);
 });

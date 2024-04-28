@@ -42,10 +42,9 @@ class DonorController extends Controller
 			->get();
 		return response()->json(['code'=>200,'donors'=>$donors],200);
 	}
-    public function store(Request $request,$donor=null) : JsonResponse
+    public function store(Request $request) : JsonResponse
 	{
 		try{
-			Log::info(request()->all);
 			$validator = $this->validator($request);
 			if ($validator->fails()) {
 				$message = $validator->getMessageBag()->first();
@@ -61,7 +60,7 @@ class DonorController extends Controller
 			if($getDiff<18){
 				return response()->json(['code'=>422,'message'=>'This user is under 18 and he is not ready to donate blood.'],422);
 			}
-
+			$donor = $request->donor_id;
 			if($donor){
 				$donor = Donor::find($donor);
 				if($donor===null){
@@ -110,10 +109,13 @@ class DonorController extends Controller
 
 	}
 
-	public function show($donor) : JsonResponse
+	public function show(Request $request) : JsonResponse
 	{
 		try{
-			$donor = Donor::find($donor);
+			$donor = Donor::find($request->id);
+			if($donor===null){
+				return response()->json(['code'=>404,'message'=>'Donor not found.'],404);
+			}
 			return response()->json([
 				'code'=>200,
 				'data' => [
