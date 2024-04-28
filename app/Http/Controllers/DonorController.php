@@ -73,6 +73,7 @@ class DonorController extends Controller
 			}else{
 				$donor = new Donor();
 				$donor->id  = uniqid('uid_');
+				$donor->created_by = Auth::id();
 				$status = 'Donor Created Successfully';
 			}
 
@@ -86,7 +87,7 @@ class DonorController extends Controller
 			$donor->is_available = $request->is_available;
 			$donor->donated_frequency = $request->donated_frequency;
 			$donor->last_donated = $request->last_donated;
-			$donor->created_by = Auth::id();
+			$donor->notes = $request->notes;
 			if ($request->avatar) {
 				$avatar = Tebi::upload($request->avatar,path:'/avatar');
 				if($avatar){
