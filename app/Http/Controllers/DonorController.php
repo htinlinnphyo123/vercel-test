@@ -178,7 +178,7 @@ class DonorController extends Controller
 	protected function validator($request) : \Illuminate\Validation\Validator
 	{
 		return Validator::make($request->all(),[
-			'name' => 'required|min:5|max:50',
+			'name' => 'required|min:4|max:50',
 			'avatar' => 'nullable|image',
 			'dob' => 'required|date',
 			'ph_home' => 'required|numeric',
