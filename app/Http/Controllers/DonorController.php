@@ -21,6 +21,8 @@ class DonorController extends Controller
 			$skip = request()->input('skip') ?? 0;
 			$limit = request()->input('limit') ?? 10;
 
+			$offset = $skip * $limit;
+
 			$donors = Donor::where('created_by', $user->id)
 				->when(request('can_donate'), function ($query) {
 					return $query->whereDate('last_donated', '<=', now()->subDay(90));
@@ -45,7 +47,7 @@ class DonorController extends Controller
 					});
 				})
 				->orderBy('created_at', 'desc')
-				->skip($skip)
+				->skip($offset)
 				->take($limit)
 				->get();
 			return response()->json(['code' => 200, 'donors' => $donors], 200);
