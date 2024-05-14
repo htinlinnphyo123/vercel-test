@@ -15,39 +15,43 @@ class DonorController extends Controller
 {
 	public function index() : JsonResponse
 	{
-		$user = Auth::user();
+		try{
+			$user = Auth::user();
 
-		$skip = request()->input('skip', 0);
-		$limit = request()->input('limit', 10);
+			$skip = request()->input('skip') ?? 0;
+			$limit = request()->input('limit') ?? 10;
 
-		$donors = Donor::where('created_by',$user->id)
-			->when(request('can_donate'),function($query){
-				return $query->whereDate('last_donated','<=',now()->subDay(90));
-			})
-			->when(request('is_available'),function($query){
-				return $query->where('is_available',true);
-			})
-			->when(request('blood_type'),function($query){
-				return $query->where('blood_type',request('blood_type'));
-			})
-			->when(request('gender'),function($query){
-				return $query->where('gender',request('gender'));
-			})
-			->when(request('name'),function($query){
-				return $query->where('name','like','%'.request('name').'%');
-			})
-			->when(request('phone'),function($query){
-				$phoneNumber = request('phone');
-				return $query->where(function($query) use($phoneNumber){
-					$query->where('ph_work','like','%'.$phoneNumber.'%')
-						->orWhere('ph_home','like','%'.$phoneNumber.'%');
-				});
-			})
-			->orderBy('created_at','desc')
-			->skip($skip)
-			->take($limit)
-			->get();
-		return response()->json(['code'=>200,'donors'=>$donors],200);
+			$donors = Donor::where('created_by', $user->id)
+				->when(request('can_donate'), function ($query) {
+					return $query->whereDate('last_donated', '<=', now()->subDay(90));
+				})
+				->when(request('is_available'), function ($query) {
+					return $query->where('is_available', true);
+				})
+				->when(request('blood_type'), function ($query) {
+					return $query->where('blood_type', request('blood_type'));
+				})
+				->when(request('gender'), function ($query) {
+					return $query->where('gender', request('gender'));
+				})
+				->when(request('name'), function ($query) {
+					return $query->where('name', 'like', '%' . request('name') . '%');
+				})
+				->when(request('phone'), function ($query) {
+					$phoneNumber = request('phone');
+					return $query->where(function ($query) use ($phoneNumber) {
+						$query->where('ph_work', 'like', '%' . $phoneNumber . '%')
+							->orWhere('ph_home', 'like', '%' . $phoneNumber . '%');
+					});
+				})
+				->orderBy('created_at', 'desc')
+				->skip($skip)
+				->take($limit)
+				->get();
+			return response()->json(['code' => 200, 'donors' => $donors], 200);
+		}catch (\Exception $e){
+			return response()->json(['code' => 500, 'error' => $e->getMessage()], 500);
+		}
 	}
     public function store(Request $request) : JsonResponse
 	{
