@@ -16,6 +16,10 @@ class DonorController extends Controller
 	public function index() : JsonResponse
 	{
 		$user = Auth::user();
+
+		$skip = request()->input('skip', 0);
+		$limit = request()->input('limit', 10);
+
 		$donors = Donor::where('created_by',$user->id)
 			->when(request('can_donate'),function($query){
 				return $query->whereDate('last_donated','<=',now()->subDay(90));
@@ -39,6 +43,9 @@ class DonorController extends Controller
 						->orWhere('ph_home','like','%'.$phoneNumber.'%');
 				});
 			})
+			->orderBy('created_at','desc')
+			->skip($skip)
+			->take($limit)
 			->get();
 		return response()->json(['code'=>200,'donors'=>$donors],200);
 	}
